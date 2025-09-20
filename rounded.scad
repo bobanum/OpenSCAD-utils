@@ -1,5 +1,6 @@
 $fa = .5;
 $fs = .25;
+include <primitives.scad>
 module rcube(size=1, corner_radius=0, center=false) {
 	if (is_num(size)) {
 		rcube([size, size, size], corner_radius);
@@ -72,3 +73,97 @@ function expand_center(size, center = true) =
 	[for (i = [0:len(size)-1]) size[i] * (bool(center[i], [1,0])/2-.5) ];
 function bool(b, vals = [0,1]) = (!is_bool(b)) ? b : (b) ? vals[1] : vals[0];
 
+module coin(l, r) {
+	d= l - 2*r;
+	union() {
+	rotate([0,0,0]) cylinder(h=20-4, d=4);
+	translate(d*[1,0,0]) rotate([0,0,0]) cylinder(h=20-4, d=4);
+	translate(d*[1,1,0]) rotate([0,0,0]) cylinder(h=20-4, d=4);
+	translate(d*[0,1,0]) rotate([0,0,0]) cylinder(h=20-4, d=4);
+	rotate([-90,0,0]) cylinder(h=20-4, d=4);
+	translate(d*[1,0,0]) rotate([-90,0,0]) cylinder(h=20-4, d=4);
+	translate(d*[1,0,1]) rotate([-90,0,0]) cylinder(h=20-4, d=4);
+	translate(d*[0,0,1]) rotate([-90,0,0]) cylinder(h=20-4, d=4);
+	rotate([0,90,0]) cylinder(h=20-4, d=4);
+	translate(d*[0,1,0]) rotate([0,90,0]) cylinder(h=20-4, d=4);
+	translate(d*[0,0,1]) rotate([0,90,0]) cylinder(h=20-4, d=4);
+	translate(d*[0,1,1]) rotate([0,90,0]) cylinder(h=20-4, d=4);
+	sphere(r=r);
+	translate(d*[1,0,0]) sphere(r=r);
+	translate(d*[0,1,0]) sphere(r=r);
+	translate(d*[0,0,1]) sphere(r=r);
+	translate(d*[0,1,1]) sphere(r=r);
+	translate(d*[1,0,1]) sphere(r=r);
+	translate(d*[1,1,0]) sphere(r=r);
+	translate(d*[1,1,1]) sphere(r=r);
+	}
+	pts = [
+		[0,0,-r],
+		[d,0,-r],
+		[d,d,-r],
+		[0,d,-r],
+		[d,-r,0],
+		[0,-r,0],
+		[0,-r,d],
+		[d,-r,d],
+		[-r,d,d],
+		[-r,0,d],
+		[-r,0,0],
+		[-r,d,0],
+		[0,0,d+r],
+		[0,d,d+r],
+		[d,d,d+r],
+		[d,0,d+r],
+		[0,d+r,d],
+		[0,d+r,0],
+		[d,d+r,0],
+		[d,d+r,d],
+		[d+r,d,d],
+		[d+r,d,0],
+		[d+r,0,0],
+		[d+r,0,d],
+	];
+	polyhedron(pts, [
+		[0,1,2,3],
+		[4,5,6,7],
+		[8,9,10,11],
+		[12,13,14,15],
+		[16,17,18,19],
+		[20,21,22,23],
+		[1,0,5,4],
+		[0,3,11,10],
+		[6,5,10,9],
+		[13,12,9,8],
+		[12,15,7,6],
+		[17,16,8,11],
+		[18,17,3,2],
+		[16,19,14,13],
+		[21,20,19,18],
+		[22,21,2,1],
+		[23,22,4,7],
+		[20,23,15,14],
+		[0,10,5],
+		[1,4,22],
+		[2,21,18],
+		[3,17,11],
+		[8,16,13],
+		[9,12,6],
+		[15,23,7],
+		[14,19,20],
+	]);
+}
+coin(20,2);
+mat0 = [
+	[1,0,0],
+	[0,1,0],
+	[0,0,1],
+];
+mat = [
+	[1,0,-.3],
+	[0,1,-.3],
+	[.3,.3,1],
+];
+!translate([5,5]){
+	multmatrix(mat) {cylinder(r1=5,h=10,r2=2);
+	translate([0,0,-1.5])sphere(5.2);}
+}
